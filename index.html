@@ -3,27 +3,28 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Birthday Cake Picker 🎂</title>
+<title>Cake Picker 🎂</title>
 <style>
     body {
         margin: 0;
         font-family: Arial, sans-serif;
         text-align: center;
-        background: linear-gradient(135deg, #ffe4e1, #fff0f5);
+        color: #333;
+        background: url('https://www.pillsburybaking.com/wp-content/uploads/2022/08/DSC07914-scaled.jpg') center/cover no-repeat fixed;
     }
     h1 {
+        font-size: 2em;
         color: #fff;
-        text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
-        margin: 10px;
+        text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+        margin-top: 15px;
     }
     .container {
-        position: relative;
-        max-width: 500px;
-        margin: 20px auto;
         background: rgba(255,255,255,0.9);
-        border-radius: 20px;
+        max-width: 400px;
+        margin: 20px auto;
         padding: 20px;
-        box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
     select, button {
         width: 100%;
@@ -35,41 +36,24 @@
     }
     button {
         background: #ff69b4;
-        color: white;
+        color: #fff;
         font-weight: bold;
         cursor: pointer;
-        transition: transform 0.2s;
     }
     button:hover {
-        transform: scale(1.05);
         background: #ff1493;
-    }
-    .cake-preview {
-        margin: 15px auto;
-        width: 250px;
-        height: 250px;
-        position: relative;
-    }
-    .cake-preview img {
-        width: 100%;
-        border-radius: 15px;
-        transition: transform 1s ease-in-out;
-    }
-    .spin {
-        transform: rotate(360deg);
     }
     .result {
         font-size: 1.3em;
         margin-top: 15px;
-        color: #ff1493;
         font-weight: bold;
+        color: #ff1493;
     }
     #musicControl {
-        margin-top: 15px;
-        font-size: 1em;
         background: #ffd700;
         color: #333;
         border: 2px solid #ffa500;
+        margin-top: 15px;
     }
     canvas {
         position: fixed;
@@ -91,12 +75,7 @@
 </head>
 <body>
 <h1>🎂 Build Your Dream Cake 🎂</h1>
-
 <div class="container">
-    <div class="cake-preview">
-        <img id="cakeImage" src="https://i.imgur.com/dkI0a9J.png" alt="Cake">
-    </div>
-
     <label>Cake Flavor:</label>
     <select id="cakeFlavor">
         <option>Chocolate 🍫</option>
@@ -148,73 +127,44 @@
 
     <button onclick="surpriseMe()">🎲 Surprise Me!</button>
     <div class="result" id="result">Your Cake: Chocolate 🍫 with Buttercream 🧈 & Ice Cream 🍨</div>
-
     <button id="musicControl">▶ Play Music</button>
 </div>
 
 <canvas id="confetti"></canvas>
 
 <audio id="bgMusic" loop>
-    <source src="https://cdn1.suno.com/track/QXHnAoa8f4IH9YY0/audio.mp3" type="audio/mpeg">
+    <source src="https://suno.com/s/QXHnAoa8f4IH9YY0" type="audio/mpeg">
 </audio>
-<audio id="taDa">
-    <source src="https://www.myinstants.com/media/sounds/ta-da.mp3" type="audio/mpeg">
+<audio id="cheer">
+    <source src="https://www.myinstants.com/media/sounds/crowd-cheer.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-const cakeImages = {
-    "Chocolate 🍫": "images/chocolate.png",
-    "Vanilla 🍦": "images/vanilla.png",
-    "Chocolate & Vanilla Swirl 🍫🍦": "images/swirl.png",
-    "Red Velvet ❤️": "images/redvelvet.png",
-    "Lemon 🍋": "images/lemon.png",
-    "Carrot 🥕": "images/carrot.png",
-    "Strawberry Shortcake 🍓": "images/strawberry.png",
-    "Funfetti 🎉": "images/funfetti.png",
-    "Coconut Cream 🥥": "images/coconut.png",
-    "Cookies & Cream 🍪": "images/cookiescream.png",
-    "Peanut Butter Chocolate 🥜🍫": "images/peanutbutter.png"
-};
-
-const cakeFlavors = Object.keys(cakeImages);
+// Data
+const cakeFlavors = [
+    "Chocolate 🍫","Vanilla 🍦","Chocolate & Vanilla Swirl 🍫🍦","Red Velvet ❤️",
+    "Lemon 🍋","Carrot 🥕","Strawberry Shortcake 🍓","Funfetti 🎉","Coconut Cream 🥥",
+    "Cookies & Cream 🍪","Peanut Butter Chocolate 🥜🍫"
+];
 const frostings = [
-    "Buttercream 🧈","Cream Cheese 🧀","Ganache 🍫","Whipped Cream ☁️",
-    "Mint 🍃","Caramel 🍯","Orange 🍊","Hazelnut 🌰","Strawberry 🍓",
-    "Peanut Butter 🥜","Mocha ☕","Cotton Candy 🍭","Lemon Zest 🍋"
+    "Buttercream 🧈","Cream Cheese 🧀","Ganache 🍫","Whipped Cream ☁️","Mint 🍃",
+    "Caramel 🍯","Orange 🍊","Hazelnut 🌰","Strawberry 🍓","Peanut Butter 🥜",
+    "Mocha ☕","Cotton Candy 🍭","Lemon Zest 🍋"
 ];
 const features = [
-    "Ice Cream 🍨","3-Tier 🎂🎂🎂","Sprinkles on Top 🌈","Rainbow Layers 🌈🍰",
-    "Surprise Inside 🎁","Oreo Topping 🍪","Reese’s Pieces 🥜🍫","Sour Gummies 🍬",
-    "Fresh Fruit 🍓🍇","Marshmallows ☁️","Chocolate Chips 🍫","Candy Canes 🍬","Pop Rocks 🤯"
+    "Ice Cream 🍨","3-Tier 🎂🎂🎂","Sprinkles on Top 🌈","Rainbow Layers 🌈🍰","Surprise Inside 🎁",
+    "Oreo Topping 🍪","Reese’s Pieces 🥜🍫","Sour Gummies 🍬","Fresh Fruit 🍓🍇","Marshmallows ☁️",
+    "Chocolate Chips 🍫","Candy Canes 🍬","Pop Rocks 🤯"
 ];
-
 const featureEmojis = {
-    "Oreo Topping 🍪": "🍪",
-    "Sprinkles on Top 🌈": "✨",
-    "Reese’s Pieces 🥜🍫": "🥜",
-    "Sour Gummies 🍬": "🍬",
-    "Fresh Fruit 🍓🍇": "🍓",
-    "Marshmallows ☁️": "☁️",
-    "Chocolate Chips 🍫": "🍫",
-    "Candy Canes 🍬": "🍭",
-    "Pop Rocks 🤯": "🤯"
+    "Oreo Topping 🍪": "🍪","Sprinkles on Top 🌈": "✨","Reese’s Pieces 🥜🍫": "🥜","Sour Gummies 🍬": "🍬",
+    "Fresh Fruit 🍓🍇": "🍓","Marshmallows ☁️": "☁️","Chocolate Chips 🍫": "🍫","Candy Canes 🍬": "🍭","Pop Rocks 🤯": "🤯"
 };
 
-const cakeImg = document.getElementById("cakeImage");
 const result = document.getElementById("result");
 const bgMusic = document.getElementById("bgMusic");
-const taDa = document.getElementById("taDa");
+const cheer = document.getElementById("cheer");
 const musicControl = document.getElementById("musicControl");
-
-document.getElementById("cakeFlavor").addEventListener("change", updateCake);
-document.getElementById("frostingFlavor").addEventListener("change", updateResult);
-document.getElementById("specialFeature").addEventListener("change", updateResult);
-
-function updateCake() {
-    const flavor = document.getElementById("cakeFlavor").value;
-    cakeImg.src = cakeImages[flavor] || cakeImages["Chocolate 🍫"];
-    updateResult();
-}
 
 function updateResult() {
     const cake = document.getElementById("cakeFlavor").value;
@@ -227,20 +177,15 @@ function surpriseMe() {
     const cake = cakeFlavors[Math.floor(Math.random() * cakeFlavors.length)];
     const frosting = frostings[Math.floor(Math.random() * frostings.length)];
     const feature = features[Math.floor(Math.random() * features.length)];
-
     document.getElementById("cakeFlavor").value = cake;
     document.getElementById("frostingFlavor").value = frosting;
     document.getElementById("specialFeature").value = feature;
-
-    updateCake();
     updateResult();
 
-    // Spin cake
-    cakeImg.classList.add("spin");
-    setTimeout(() => cakeImg.classList.remove("spin"), 1000);
+    // Cheer sound
+    cheer.play();
 
-    // Confetti + toppings + sound
-    taDa.play();
+    // Confetti and toppings
     startConfetti();
     spawnToppings(feature);
 }
@@ -303,6 +248,8 @@ function animateConfetti() {
     requestAnimationFrame(animateConfetti);
     setTimeout(() => { confettiParticles = []; }, 3000);
 }
+
+document.querySelectorAll("select").forEach(sel => sel.addEventListener("change", updateResult));
 </script>
 </body>
 </html>

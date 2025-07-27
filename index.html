@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cake Picker 🎂</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: #fff0f5;
+        color: #333;
+    }
+    .background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('https://www.pillsburybaking.com/wp-content/uploads/2022/08/DSC07914-scaled.jpg') center/cover no-repeat;
+        z-index: -1;
+        filter: brightness(0.8);
+    }
+    h1 {
+        font-size: 2em;
+        margin: 10px;
+        color: white;
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+    }
+    .container {
+        max-width: 400px;
+        margin: 20px auto;
+        background: rgba(255,255,255,0.9);
+        padding: 15px;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    select {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        font-size: 1em;
+        border-radius: 8px;
+        border: 2px solid #f7a6b4;
+    }
+    button {
+        background: #ff69b4;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        font-size: 1.1em;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    button:hover {
+        background: #ff1493;
+    }
+    .result {
+        margin-top: 15px;
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #ff1493;
+    }
+    canvas {
+        position: fixed;
+        pointer-events: none;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+</head>
+<body>
+    <div class="background"></div>
+    <h1>🎂 Build Your Dream Cake 🎂</h1>
+    <div class="container">
+        <label>Cake Flavor:</label>
+        <select id="cakeFlavor">
+            <option>Chocolate 🍫</option>
+            <option>Vanilla 🍦</option>
+            <option>Chocolate & Vanilla Swirl 🍫🍦</option>
+            <option>Red Velvet ❤️</option>
+            <option>Lemon 🍋</option>
+            <option>Carrot 🥕</option>
+        </select>
+
+        <label>Frosting Flavor:</label>
+        <select id="frostingFlavor">
+            <option>Buttercream 🧈</option>
+            <option>Cream Cheese 🧀</option>
+            <option>Ganache 🍫</option>
+            <option>Whipped Cream ☁️</option>
+            <option>Mint 🍃</option>
+            <option>Caramel 🍯</option>
+            <option>Orange 🍊</option>
+            <option>Hazelnut 🌰</option>
+        </select>
+
+        <label>Special Feature:</label>
+        <select id="specialFeature">
+            <option>Ice Cream 🍨</option>
+            <option>3-Tier 🎂🎂🎂</option>
+            <option>Sprinkles on Top 🌈</option>
+            <option>Rainbow Layers 🌈🍰</option>
+            <option>Surprise Inside 🎁</option>
+            <option>Oreo Topping 🍪</option>
+            <option>Reese’s Pieces 🥜🍫</option>
+            <option>Sour Gummies 🍬</option>
+        </select>
+
+        <button onclick="surpriseMe()">🎲 Surprise Me!</button>
+
+        <div class="result" id="result">
+            Your Cake: Chocolate 🍫 with Buttercream 🧈 & Ice Cream 🍨
+        </div>
+    </div>
+
+<canvas id="confetti"></canvas>
+
+<script>
+// Updated arrays
+const cakeFlavors = [
+    "Chocolate 🍫",
+    "Vanilla 🍦",
+    "Chocolate & Vanilla Swirl 🍫🍦",
+    "Red Velvet ❤️",
+    "Lemon 🍋",
+    "Carrot 🥕"
+];
+const frostings = [
+    "Buttercream 🧈",
+    "Cream Cheese 🧀",
+    "Ganache 🍫",
+    "Whipped Cream ☁️",
+    "Mint 🍃",
+    "Caramel 🍯",
+    "Orange 🍊",
+    "Hazelnut 🌰"
+];
+const features = [
+    "Ice Cream 🍨",
+    "3-Tier 🎂🎂🎂",
+    "Sprinkles on Top 🌈",
+    "Rainbow Layers 🌈🍰",
+    "Surprise Inside 🎁",
+    "Oreo Topping 🍪",
+    "Reese’s Pieces 🥜🍫",
+    "Sour Gummies 🍬"
+];
+
+function updateResult(cake, frosting, feature) {
+    document.getElementById("result").innerHTML =
+        `Your Cake: <span style="color:#ff69b4">${cake}</span> with <span style="color:#ff1493">${frosting}</span> & <span style="color:#32cd32">${feature}</span> 🎉`;
+}
+
+function surpriseMe() {
+    const cake = cakeFlavors[Math.floor(Math.random() * cakeFlavors.length)];
+    const frosting = frostings[Math.floor(Math.random() * frostings.length)];
+    const feature = features[Math.floor(Math.random() * features.length)];
+
+    document.getElementById("cakeFlavor").value = cake;
+    document.getElementById("frostingFlavor").value = frosting;
+    document.getElementById("specialFeature").value = feature;
+
+    updateResult(cake, frosting, feature);
+    startConfetti();
+}
+
+document.querySelectorAll("select").forEach(sel => {
+    sel.addEventListener("change", () => {
+        updateResult(
+            document.getElementById("cakeFlavor").value,
+            document.getElementById("frostingFlavor").value,
+            document.getElementById("specialFeature").value
+        );
+    });
+});
+
+// Confetti Effect
+const confettiCanvas = document.getElementById("confetti");
+const ctx = confettiCanvas.getContext("2d");
+confettiCanvas.width = window.innerWidth;
+confettiCanvas.height = window.innerHeight;
+window.addEventListener("resize", () => {
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+});
+
+let confettiParticles = [];
+function startConfetti() {
+    confettiParticles = [];
+    for (let i = 0; i < 150; i++) {
+        confettiParticles.push({
+            x: Math.random() * confettiCanvas.width,
+            y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+            w: 10,
+            h: 10,
+            color: `hsl(${Math.random() * 360}, 100%, 70%)`,
+            speed: Math.random() * 4 + 2
+        });
+    }
+    animateConfetti();
+}
+
+function animateConfetti() {
+    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+    confettiParticles.forEach(p => {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, p.w, p.h);
+        p.y += p.speed;
+        if (p.y > confettiCanvas.height) p.y = -10;
+    });
+    requestAnimationFrame(animateConfetti);
+    setTimeout(() => { confettiParticles = []; }, 3000);
+}
+</script>
+</body>
+</html>
